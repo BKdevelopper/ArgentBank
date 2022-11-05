@@ -6,6 +6,7 @@ import {
   UpdateUser,
 } from '../redux/actions/userAction'
 import axios from 'axios'
+import { notify } from '../other/notification'
 
 function setAuthorizationToken(token) {
   if (token) axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
@@ -20,7 +21,7 @@ export const signInUser = (user) => async (dispatch) => {
     else localStorage.removeItem('token')
     setAuthorizationToken(token)
     dispatch(signinSuccess(token))
-
+    notify('Welcome to your account', 'success')
     const responseProfile = await axios.post('/user/profile')
     const infoUser = responseProfile.data.body
     console.log('infouser', infoUser)
@@ -28,13 +29,25 @@ export const signInUser = (user) => async (dispatch) => {
     dispatch(SetUser(infoUser))
   } catch (error) {
     dispatch(signinRequest(false))
-    dispatch(
-      signinFailure(
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
+    if (error.response.status >= 500)
+      // Error 500
+      return dispatch(
+        signinFailure(
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message
+        )
       )
-    )
+    if (error.response.status >= 400)
+      // Error 400
+      return dispatch(
+        signinFailure(
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message
+        )
+      )
+    notify('Wrong email or password', 'error')
   }
 }
 export const signInAutoLogin = (token) => async (dispatch) => {
@@ -44,27 +57,6 @@ export const signInAutoLogin = (token) => async (dispatch) => {
     const response = await axios.post('/user/profile')
     const infoUser = response.data.body
     dispatch(SetUser(infoUser))
-  } catch (error) {
-    dispatch(
-      signinFailure(
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-      )
-    )
-  }
-}
-
-export const signInLogout = () => async (dispatch) => {
-  localStorage.removeItem('token')
-  dispatch(signinFailure(null))
-  window.location.href = '/'
-}
-export const signInUpdate = (formData) => async (dispatch) => {
-  try {
-    const response = await axios.put('/user/profile', formData)
-    const infoUser = response.data.body
-    dispatch(UpdateUser(infoUser))
   } catch (error) {
     if (error.response.status >= 500)
       // Error 500
@@ -84,5 +76,41 @@ export const signInUpdate = (formData) => async (dispatch) => {
             : error.message
         )
       )
+  }
+}
+
+export const signInLogout = () => async (dispatch) => {
+  localStorage.removeItem('token')
+  dispatch(signinFailure(null))
+  window.location.href = '/'
+}
+export const signInUpdate = (formData) => async (dispatch) => {
+  try {
+    const response = await axios.put('/user/profile', formData)
+    const infoUser = response.data.body
+    // validate('firstname')
+    // validate('lastname')
+    dispatch(UpdateUser(infoUser))
+    notify('Update has been successfully completed', 'success')
+  } catch (error) {
+    if (error.response.status >= 500)
+      // Error 500
+      return dispatch(
+        signinFailure(
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message
+        )
+      )
+    if (error.response.status >= 400)
+      // Error 400
+      return dispatch(
+        signinFailure(
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message
+        )
+      )
+    notify('Failure update', 'error')
   }
 }

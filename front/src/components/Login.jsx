@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { signInUser } from '../services/API/callAPI'
 import { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-// import { authSelector } from '../redux/reducer/selector'
 import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
@@ -13,6 +12,7 @@ const Login = () => {
   const navigate = useNavigate()
   const isAuthenticated = useSelector((state) => state.isAuthenticated)
   const loading = useSelector((state) => state.loading)
+
   console.log('isAuthenticated', isAuthenticated)
   console.log('loading', loading)
   const loginFormSubmit = (event) => {
@@ -26,7 +26,9 @@ const Login = () => {
   }
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/user') // Redirect on authentication
+    if (isAuthenticated) {
+      navigate('/user')
+    }
   }, [isAuthenticated, navigate])
   return (
     <section className="sign-in-content">
@@ -60,11 +62,6 @@ const Login = () => {
           />
           <label htmlFor="remember-me">Remember me</label>
         </div>
-        {/* PLACEHOLDER DUE TO STATIC SITE  */}
-        {/* <a href="./user.html" className="sign-in-button">
-              Sign In
-            </a> */}
-        {/*SHOULD BE THE BUTTON BELOW */}
         <button
           type="submit"
           className="sign-in-button"

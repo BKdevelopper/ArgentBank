@@ -3,58 +3,54 @@ import { useDispatch } from 'react-redux'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { signInUpdate } from '../services/API/callAPI'
+import { useRef } from 'react'
 export default function Update() {
-  const [updateProfile, setUpdateProfile] = useState(false)
-  const [updateProfileForm, setUpdateProfileForm] = useState({
-    firstName: '',
-    lastName: '',
-  })
+  const inputFirstname = useRef()
+  const inputLastname = useRef()
+  const [updateUser, setupdateUser] = useState(false)
+
   const user = useSelector((state) => state.infoUser)
   const dispatch = useDispatch()
 
-  const saveUpdateProfile = (e) => {
+  const cancelupdateUser = () => setupdateUser(false)
+  const showupdateUser = () => {
+    setupdateUser(true)
+  }
+
+  const saveupdateUser = (e) => {
     e.preventDefault()
-    dispatch(signInUpdate(updateProfileForm))
-    setUpdateProfile(false)
+    const userData = {
+      firstName: inputFirstname.current.value,
+      lastName: inputLastname.current.value,
+    }
+    dispatch(signInUpdate(userData))
+    setupdateUser(false)
   }
 
-  const cancelUpdateProfile = () => setUpdateProfile(false)
-
-  const showUpdateProfile = () => {
-    setUpdateProfileForm({
-      firstName: user.firstName,
-      lastName: user.lastName,
-    })
-    setUpdateProfile(true)
-  }
   return (
     <>
-      {!updateProfile ? (
+      {!updateUser ? (
         <div className="header">
           <h1>
             Welcome back
             <br />
             {user.infoUser.firstName} {user.infoUser.lastName} !
           </h1>
-          <button className="edit-button" onClick={showUpdateProfile}>
+          <button className="edit-button" onClick={showupdateUser}>
             Edit Name
           </button>
         </div>
       ) : (
         <div className="dashboard-header">
           <h1>Edit your profile information</h1>
-          <form onSubmit={saveUpdateProfile} className="dashboard-form">
+          <form onSubmit={saveupdateUser} className="dashboard-form">
             <div className="dashboard-form-wrapper">
               <input
                 type="text"
                 className="form-control"
-                value={updateProfileForm.firstName}
-                onChange={(e) =>
-                  setUpdateProfileForm({
-                    ...updateProfileForm,
-                    firstName: e.target.value,
-                  })
-                }
+                id="firstName"
+                placeholder="First Name"
+                ref={inputFirstname}
               />
               <button type="submit" className="btn btn-primary">
                 Save
@@ -64,19 +60,11 @@ export default function Update() {
               <input
                 type="text"
                 className="form-control"
-                value={updateProfileForm.lastName}
-                onChange={(e) =>
-                  setUpdateProfileForm({
-                    ...updateProfileForm,
-                    lastName: e.target.value,
-                  })
-                }
+                id="lastName"
+                placeholder="Last Name"
+                ref={inputLastname}
               />
-              <button
-                className="btn"
-                type="button"
-                onClick={cancelUpdateProfile}
-              >
+              <button className="btn" type="button" onClick={cancelupdateUser}>
                 Cancel
               </button>
             </div>

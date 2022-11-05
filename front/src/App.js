@@ -1,3 +1,5 @@
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { Component, useEffect } from 'react'
 import {
   BrowserRouter as Router,
@@ -15,33 +17,34 @@ export default function App() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    // Reconnect user
     const token = localStorage.getItem('token')
     if (token) dispatch(signInAutoLogin(token))
   }, [dispatch])
   return (
-    <Router>
-      <Routes>
-        <Route path="/" exact element={<Home />} />
-        <Route
-          path="/signin"
-          exact
-          element={
-            <SetRoute
-              redirectTo="/user"
-              element={<SignInPage />}
-              authenticated={false}
-            />
-          }
-        />
-        {/* <Route path="/user" exact element={<UserPage />} /> */}
-        <Route
-          path="/user"
-          exact
-          element={<SetRoute redirectTo="/signin" element={<UserPage />} />}
-        />
-        <Route path="*" element={<Navigate to={'/'} />} />
-      </Routes>
-    </Router>
+    <>
+      <Router>
+        <Routes>
+          <Route path="/" exact element={<Home />} />
+          <Route
+            path="/signin"
+            exact
+            element={
+              <SetRoute
+                redirectTo="/user"
+                element={<SignInPage />}
+                authenticated={false}
+              />
+            }
+          />
+          <Route
+            path="/user"
+            exact
+            element={<SetRoute redirectTo="/signin" element={<UserPage />} />}
+          />
+          <Route path="*" element={<Navigate to={'/'} />} />
+        </Routes>
+      </Router>
+      <ToastContainer autoClose={3500} />
+    </>
   )
 }
