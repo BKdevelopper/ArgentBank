@@ -12,9 +12,6 @@ const Login = () => {
   const navigate = useNavigate()
   const isAuthenticated = useSelector((state) => state.isAuthenticated)
   const loading = useSelector((state) => state.loading)
-
-  console.log('isAuthenticated', isAuthenticated)
-  console.log('loading', loading)
   const loginFormSubmit = (event) => {
     event.preventDefault()
     const userData = {
