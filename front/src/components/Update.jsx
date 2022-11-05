@@ -4,27 +4,47 @@ import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { signInUpdate } from '../services/API/callAPI'
 import { useRef } from 'react'
+import { notify } from '../services/other/notification'
+
 export default function Update() {
   const inputFirstname = useRef()
   const inputLastname = useRef()
-  const [updateUser, setupdateUser] = useState(false)
 
+  const [updateUser, setupdateUser] = useState(false)
   const user = useSelector((state) => state.infoUser)
   const dispatch = useDispatch()
-
   const cancelupdateUser = () => setupdateUser(false)
   const showupdateUser = () => {
     setupdateUser(true)
   }
-
+  const validate = () => {
+    let resultFirstname = /^[a-zàâçéèêëîïôûùüÿñæœ .-]*$/i.test(
+      inputFirstname.current.value
+    )
+    let resultLastname = /^[a-zàâçéèêëîïôûùüÿñæœ .-]*$/i.test(
+      inputLastname.current.value
+    )
+    if (!resultFirstname) {
+      notify('Only letters on Firstname', 'error')
+      return false
+    }
+    if (!resultLastname) {
+      notify('Only letters on Lastname', 'error')
+      return false
+    }
+    return true
+  }
   const saveupdateUser = (e) => {
     e.preventDefault()
+    let a = validate()
     const userData = {
       firstName: inputFirstname.current.value,
       lastName: inputLastname.current.value,
     }
-    dispatch(signInUpdate(userData))
-    setupdateUser(false)
+    if (a) {
+      dispatch(signInUpdate(userData))
+      setupdateUser(false)
+    }
   }
 
   return (
