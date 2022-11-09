@@ -1,6 +1,6 @@
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { Component, useEffect } from 'react'
+import { useEffect } from 'react'
 import {
   BrowserRouter as Router,
   Route,
@@ -10,7 +10,7 @@ import {
 import Home from './pages/Home'
 import SignInPage from './pages/Login'
 import UserPage from './pages/Profil'
-import { signInAutoLogin } from './services/API/callAPI'
+import { postDataUser } from './services/API/callAPI'
 import { useDispatch } from 'react-redux'
 import SetRoute from './services/redux/route'
 export default function App() {
@@ -18,7 +18,7 @@ export default function App() {
 
   useEffect(() => {
     const token = localStorage.getItem('token')
-    if (token) dispatch(signInAutoLogin(token))
+    if (token) dispatch(postDataUser(token))
   }, [dispatch])
   return (
     <>

@@ -6,13 +6,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../components/Loader'
 import Update from '../components/Update'
 import { account } from '../mocks/account'
+
 const UserPage = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.infoUser)
   const loading = useSelector((state) => state.loading)
-  // const debug = useSelector((state) => state.infoUser)
-  console.log('debug', user)
-  console.log('debug', loading)
   if (loading) {
     return <Loader />
   }
@@ -20,14 +18,14 @@ const UserPage = () => {
     return (
       <div className="container">
         <nav className="main-nav">
-          <a className="main-nav-logo" href="./index.html">
+          <NavLink to="/" className="main-nav-logo">
             <img
               className="main-nav-logo-image"
               src="../../img/argentBankLogo.png"
               alt="Argent Bank Logo"
             />
             <h1 className="sr-only">Argent Bank</h1>
-          </a>
+          </NavLink>
           <div>
             <NavLink to="/user" className="main-nav-item">
               <i className="fa fa-user-circle"></i>

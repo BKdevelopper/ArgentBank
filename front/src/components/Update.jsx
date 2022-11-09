@@ -17,6 +17,10 @@ export default function Update() {
   const showupdateUser = () => {
     setupdateUser(true)
   }
+  /**
+   * Validate the form
+   * @returns {boolean}
+   */
   const validate = () => {
     let resultFirstname = /^[a-zàâçéèêëîïôûùüÿñæœ .-]*$/i.test(
       inputFirstname.current.value
@@ -24,6 +28,13 @@ export default function Update() {
     let resultLastname = /^[a-zàâçéèêëîïôûùüÿñæœ .-]*$/i.test(
       inputLastname.current.value
     )
+    if (
+      inputLastname.current.value === '' ||
+      inputFirstname.current.value === ''
+    ) {
+      notify('Complete all fields', 'error')
+      return false
+    }
     if (!resultFirstname) {
       notify('Only letters on Firstname', 'error')
       return false
@@ -34,14 +45,17 @@ export default function Update() {
     }
     return true
   }
+  /**
+   * Send the form to the server
+   */
   const saveupdateUser = (e) => {
     e.preventDefault()
-    let a = validate()
+    let regex = validate()
     const userData = {
       firstName: inputFirstname.current.value,
       lastName: inputLastname.current.value,
     }
-    if (a) {
+    if (regex) {
       dispatch(signInUpdate(userData))
       setupdateUser(false)
     }

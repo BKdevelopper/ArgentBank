@@ -12,6 +12,9 @@ const Login = () => {
   const navigate = useNavigate()
   const isAuthenticated = useSelector((state) => state.isAuthenticated)
   const loading = useSelector((state) => state.loading)
+  /**
+   * Send the form to the server
+   */
   const loginFormSubmit = (event) => {
     event.preventDefault()
     const userData = {
